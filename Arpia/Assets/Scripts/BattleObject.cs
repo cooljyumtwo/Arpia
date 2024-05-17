@@ -37,6 +37,8 @@ public class BattleObject : MonoBehaviour, IPointerClickHandler
 
     private void FixedUpdate()
     {
+        if (BattleManager.Instance.IsPlayerTurn) return;
+
         _coolTime += Time.deltaTime;
         if (_coolTime > _maxCoolTime)
         {
