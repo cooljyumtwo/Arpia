@@ -20,7 +20,7 @@ public class SkillSetController : MonoBehaviour
 
     private void AddEventTriggersToChildren()
     {
-        AddEventTriggersRecursively(transform);
+        //AddEventTriggersRecursively(transform);
     }
 
     private void AddEventTriggersRecursively(Transform parent)
@@ -52,13 +52,31 @@ public class SkillSetController : MonoBehaviour
 
         if (parentController != null)
         {
-            parentController.HandleChildClick(child.gameObject.name);
+            parentController.HandleChildClick(child);
+        }
+    }
+    public void SetChildrenActive(Transform parent, bool isActive)
+    {
+        foreach (Transform child in parent)
+        {
+            child.gameObject.SetActive(isActive);
         }
     }
 
-    private void HandleChildClick(string childName)
+    public void OnChildrenActive(Transform parent)
     {
+        foreach (Transform child in parent)
+        {
+            child.gameObject.SetActive(true);
+        }
+    }
+
+    public void HandleChildClick(Transform child)
+    {
+        string childName = child.gameObject.name;
+
         Debug.Log("SkillSetController_HandleChildClick_childName : " + childName);
+
         switch (childName)
         {
             case "Attack":
@@ -66,18 +84,22 @@ public class SkillSetController : MonoBehaviour
                 break;
             case "Magic":
                 _animator.SetBool("isActionMagicOn", true);
+                SetChildrenActive(child, true);
                 break;
             case "Cancel":
                 _animator.SetBool("isActionMenuOn", true);
                 break;
             case "Back":
                 _animator.SetBool("isActionMagicOn", false);
+                SetChildrenActive(child.parent, false);
                 break;
             case "Fire":
                 _animator.SetBool("isSpellFire", true);
+                SetChildrenActive(child, true);
                 break;
             case "BackFire":
                 _animator.SetBool("isSpellFire", false);
+                SetChildrenActive(child.parent, false);
                 break;
             default:
                 Debug.LogWarning("Unknown child name: " + childName);
